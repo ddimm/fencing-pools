@@ -1,45 +1,79 @@
 import React, { useState } from "react";
 import { StyleSheet, View, Button, Text } from "react-native";
 import { connect } from "react-redux";
+import { setScores } from "../utils/actions";
+const _ = require("lodash");
 
-function Encounter({
-  fencerOneIndex,
-  fencerTwoIndex,
-  navigation,
-  setScores,
-  scores,
-}) {
+function Encounter({ route, navigation, setScores, scores, fencers }) {
+  let { fencerOneIndex } = route.params;
+  let { fencerTwoIndex } = route.params;
   const [fencerOneScore, setFencerOneScore] = useState(0);
   const [fencerTwoScore, setFencerTwoScore] = useState(0);
+  function increaseScore(fencer) {
+    switch (fencer) {
+      case 1:
+        if (fencerOneScore < 5) {
+          setFencerOneScore(fencerOneScore + 1);
+        }
+        break;
+
+      case 2:
+        if (fencerTwoScore < 5) {
+          setFencerTwoScore(fencerTwoScore + 1);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+  function decreaseScore(fencer) {
+    switch (fencer) {
+      case 1:
+        if (fencerOneScore > 0) {
+          setFencerOneScore(fencerOneScore - 1);
+        }
+        break;
+
+      case 2:
+        if (fencerTwoScore > 0) {
+          setFencerTwoScore(fencerTwoScore - 1);
+        }
+        break;
+      default:
+        break;
+    }
+  }
 
   return (
     <View style={{ ...styles.container, flexDirection: "row" }}>
       <View style={{ ...styles.container, flexDirection: "column" }}>
+        <Text style={{ padding: 10 }}>{fencers[fencerOneIndex]}</Text>
         <Button
           onPress={() => {
-            setFencerOneScore(fencerOneScore + 1);
+            increaseScore(1);
           }}
           title="+"
         />
         <Text style={{ fontSize: 14, padding: 10 }}>{fencerOneScore}</Text>
         <Button
           onPress={() => {
-            setFencerOneScore(fencerOneScore - 1);
+            decreaseScore(1);
           }}
           title="-"
         />
       </View>
       <View style={{ ...styles.container, flexDirection: "column" }}>
+        <Text style={{ padding: 10 }}>{fencers[fencerTwoIndex]}</Text>
         <Button
           onPress={() => {
-            setFencerTwoScore(fencerTwoScore + 1);
+            increaseScore(2);
           }}
           title="+"
         />
         <Text style={{ fontSize: 14, padding: 10 }}>{fencerTwoScore}</Text>
         <Button
           onPress={() => {
-            setFencerTwoScore(fencerTwoScore - 1);
+            decreaseScore(2);
           }}
           title="-"
         />
@@ -47,6 +81,17 @@ function Encounter({
       <View style={{ alignSelf: "flex-end", margin: 10, padding: 10 }}>
         <Button
           onPress={() => {
+            setScores(
+              scores.map((rowArr, rowIndex) => {
+                const newScoreRow = [...rowArr];
+                if (rowIndex === fencerOneIndex) {
+                  newScoreRow[fencerTwoIndex] = fencerOneScore;
+                } else if (rowIndex === fencerTwoIndex) {
+                  newScoreRow[fencerOneIndex] = fencerTwoScore;
+                }
+                return newScoreRow;
+              })
+            );
             navigation.goBack();
           }}
           title={"submit score"}
@@ -74,6 +119,7 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   return {
     scores: state.scores,
+    fencers: state.fencers,
   };
 }
 
