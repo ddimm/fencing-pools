@@ -1,7 +1,14 @@
 // pre-written bout orders as outlines by USA Fencing
 // https://cdn2.sportngin.com/attachments/document/0034/5494/bout_order.pdf
 
-const poolOf4 = [[1, 4], [2, 3], [1, 3], [2, 4][(3, 4)], [1, 2]];
+const poolOf4 = [
+  [1, 4],
+  [2, 3],
+  [1, 3],
+  [2, 4],
+  [3, 4],
+  [1, 2],
+];
 
 const poolOf5 = [
   [1, 2],
@@ -302,3 +309,19 @@ const poolOf12 = [
   [10, 5],
   [6, 11],
 ];
+
+const allOrders = [
+  poolOf4,
+  poolOf5,
+  poolOf6,
+  poolOf7,
+  poolOf8,
+  poolOf9,
+  poolOf10,
+  poolOf11,
+  poolOf12,
+];
+
+export default function getBoutOrder(poolSize) {
+  return allOrders[poolSize - 4];
+}

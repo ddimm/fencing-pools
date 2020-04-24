@@ -8,6 +8,7 @@ import reducer from "./utils/reducers";
 import HomeScreen from "./components/HomeScreen";
 import NameScreen from "./components/NameScreen";
 import BoutScreen from "./components/BoutScreen";
+import Encounter from "./components/Encounter";
 
 const Stack = createStackNavigator();
 const store = createStore(reducer);
@@ -30,6 +31,13 @@ export default function App() {
             name="BoutScreen"
             options={{
               title: "Bout Order",
+            }}
+          />
+          <Stack.Screen
+            component={Encounter}
+            name="EncounterScreen"
+            options={{
+              title: "Enter The Score",
             }}
           />
         </Stack.Navigator>
