@@ -1,13 +1,18 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { setFencers } from "../utils/actions";
+import { ScrollView } from "react-native-gesture-handler";
 import {
+  List,
+  Button,
   TextInput,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native-gesture-handler";
-import Icon from "react-native-vector-icons/Feather";
+  IconButton,
+  Text,
+  Card,
+  Paragraph,
+  Title,
+} from "react-native-paper";
 
 //input fencer names
 function NameScreen({ navigation, setFencers }) {
@@ -16,62 +21,70 @@ function NameScreen({ navigation, setFencers }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.textInputContainer}>
+      <View
+        style={{
+          margin: 10,
+          alignItems: "center",
+          justifyContent: "center",
+          flexDirection: "column",
+        }}
+      >
         <TextInput
-          style={styles.textInput}
+          style={{ width: "75%" }}
           onChangeText={(newText) => {
             setText(newText);
           }}
           value={text}
           placeholder={"fencer name"}
-        />
-        <TouchableOpacity
+        ></TextInput>
+        <IconButton
           onPress={() => {
             if (text !== "") {
               setNames([...names, text]);
               setText("");
             }
           }}
-        >
-          <Icon name="plus" size={30} style={{ marginLeft: 15 }} />
-        </TouchableOpacity>
+          icon={"plus"}
+        />
       </View>
       <View style={styles.namesList}>
         <ScrollView>
           {names.map((item, index) => {
             return (
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: "row",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  padding: 10,
-                }}
+              <Card
                 key={index}
+                style={{ marginBottom: 10, marginLeft: 5, marginRight: 5 }}
               >
-                <Text style={{ padding: 10 }}>{`${index + 1}. ${item}`}</Text>
-                <Button
-                  onPress={() => {
-                    setNames(
-                      names.filter((val) => {
-                        if (val === item) {
-                          return false;
-                        } else {
-                          return true;
-                        }
-                      })
-                    );
-                  }}
-                  title="remove"
-                />
-              </View>
+                <Card.Content>
+                  <Title>{`Fencer ${index + 1}`}</Title>
+                  <Paragraph>{`${item}`}</Paragraph>
+                </Card.Content>
+                <Card.Actions>
+                  <Button
+                    onPress={() => {
+                      setNames(
+                        names.filter((val) => {
+                          if (val === item) {
+                            return false;
+                          } else {
+                            return true;
+                          }
+                        })
+                      );
+                    }}
+                    mode="text"
+                  >
+                    remove
+                  </Button>
+                </Card.Actions>
+              </Card>
             );
           })}
         </ScrollView>
       </View>
       <View style={styles.startButtonView}>
         <Button
+          mode="contained"
           onPress={() => {
             if (names.length < 3) {
               alert("You must have at least four people to start a pool.");
@@ -82,8 +95,9 @@ function NameScreen({ navigation, setFencers }) {
               navigation.navigate("BoutScreen");
             }
           }}
-          title="Start Pool"
-        />
+        >
+          Start Pool
+        </Button>
       </View>
     </View>
   );
@@ -93,39 +107,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF",
   },
-  header: {
-    marginTop: "15%",
-    fontSize: 20,
-    color: "red",
-    paddingBottom: 10,
-  },
-  textInputContainer: {
-    flexDirection: "row",
-    alignItems: "baseline",
-    borderColor: "black",
-    borderBottomWidth: 1,
-    paddingRight: 10,
-    paddingBottom: 10,
-    margin: 10,
-  },
-  textInput: {
-    flex: 1,
-    height: 20,
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "black",
-    paddingLeft: 10,
-    minHeight: "3%",
-  },
+
   namesList: {
     flex: 1,
-    width: "100%",
-    alignItems: "center",
+
     justifyContent: "center",
-    padding: 10,
   },
   startButtonView: {
     margin: 10,

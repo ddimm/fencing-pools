@@ -1,7 +1,8 @@
 import React from "react";
 import { connect } from "react-redux";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { setScores, setFencers } from "../utils/actions";
+import { Button, Text } from "react-native-paper";
 
 function HomeScreen({ setFencers, setScores, navigation }) {
   return (
@@ -9,13 +10,15 @@ function HomeScreen({ setFencers, setScores, navigation }) {
       <Text style={styles.textStyle}>Start a fencing pool with your pals.</Text>
       <View style={styles.buttonContainer}>
         <Button
-          title={"Start a New Pool"}
           onPress={() => {
             setScores([]);
             setFencers([]);
             navigation.navigate("NameScreen");
           }}
-        />
+          mode="contained"
+        >
+          Start a New Pool
+        </Button>
       </View>
     </View>
   );
@@ -24,10 +27,8 @@ function HomeScreen({ setFencers, setScores, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#F5FCFF",
   },
   buttonContainer: {
     alignItems: "center",

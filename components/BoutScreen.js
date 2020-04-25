@@ -1,80 +1,96 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View } from "react-native";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { connect } from "react-redux";
-import { StyleSheet, Text, View, Button } from "react-native";
-import { setFencers, setScores } from "../utils/actions";
-import {
-  TextInput,
-  TouchableOpacity,
-  ScrollView,
-} from "react-native-gesture-handler";
+import { setScores } from "../utils/actions";
 import getBoutOrder from "../utils/boutorders";
+import { Button, Card, Paragraph, Title, Subheading } from "react-native-paper";
 
 function BoutScreen({ navigation, fencers, scores, setScores }) {
   const boutOrders = getBoutOrder(fencers.length);
+  const [finished, setFinished] = useState(false);
   useEffect(() => {
-    let numFencers = fencers.length;
-    setScores([...Array(fencers.length)].map(() => Array(fencers.length)));
+    if (scores === undefined || scores.length < 1) {
+      setScores([...Array(fencers.length)].map(() => Array(fencers.length)));
+    }
   }, []);
+  useEffect(() => {
+    isOver(scores).then((result) => {
+      setFinished(result);
+    });
+  }, [scores]);
+
   return (
-    <View style={styles.container}>
+    <View style={{ marginTop: 10, justifyContent: "center", flex: 1 }}>
       <ScrollView>
         {boutOrders.map((value, index) => {
           const [fencer1, fencer2] = value;
           return (
-            <TouchableOpacity
-              onPress={() => {
-                navigation.navigate("EncounterScreen", {
-                  fencerOneIndex: fencer1 - 1,
-                  fencerTwoIndex: fencer2 - 1,
-                });
-              }}
-              key={index}
-            >
-              <View
-                style={{
-                  margin: 10,
-                  justifyContent: "space-around",
-                  alignItems: "center",
-                  flexDirection: "row",
-                  width: "75%",
-                  alignSelf: "center",
-                }}
-              >
+            <Card key={index} style={{ marginBottom: 10, marginHorizontal: 5 }}>
+              <Card.Content>
+                <Title>{`Bout ${index + 1}`}</Title>
+                <Subheading>{`${fencers[fencer1 - 1]} vs. ${
+                  fencers[fencer2 - 1]
+                }`}</Subheading>
                 {scores.length > 0 ? (
-                  <Text style={{ ...styles.nameText, alignSelf: "flex-start" }}>
-                    {scores[fencer1 - 1][fencer2 - 1] === undefined
-                      ? "-"
-                      : scores[fencer1 - 1][fencer2 - 1]}
-                  </Text>
+                  <Paragraph>
+                    {scores[fencer1 - 1][fencer2 - 1] === undefined ||
+                    scores[fencer2 - 1][fencer1 - 1] === undefined
+                      ? `No Score`
+                      : `${scores[fencer1 - 1][fencer2 - 1]} - ${
+                          scores[fencer2 - 1][fencer1 - 1]
+                        }`}
+                  </Paragraph>
                 ) : (
-                  <></>
+                  <Paragraph>No Score</Paragraph>
                 )}
-
-                <Text style={styles.nameText}>
-                  {fencer1}. {fencers[fencer1 - 1]}
-                </Text>
-                <Text style={styles.nameText}>vs.</Text>
-                <Text style={styles.nameText}>
-                  {fencer2}. {fencers[fencer2 - 1]}
-                </Text>
-                {scores.length > 0 ? (
-                  <Text style={{ ...styles.nameText, alignSelf: "flex-end" }}>
-                    {scores[fencer2 - 1][fencer1 - 1] === undefined
-                      ? "-"
-                      : scores[fencer2 - 1][fencer1 - 1]}
-                  </Text>
-                ) : (
-                  <></>
-                )}
-              </View>
-            </TouchableOpacity>
+              </Card.Content>
+              <Card.Actions>
+                <Button
+                  mode="contained"
+                  onPress={() => {
+                    navigation.navigate("EncounterScreen", {
+                      fencerOneIndex: fencer1 - 1,
+                      fencerTwoIndex: fencer2 - 1,
+                    });
+                  }}
+                >
+                  Input Score
+                </Button>
+              </Card.Actions>
+            </Card>
           );
         })}
       </ScrollView>
+      <View>
+        <Button
+          mode="contained"
+          style={{ margin: 10 }}
+          onPress={() => {
+            navigation.navigate("ResultsScreen");
+          }}
+          disabled={!finished}
+        >
+          Finish
+        </Button>
+      </View>
     </View>
   );
 }
 
+async function isOver(scores) {
+  if (scores === undefined) {
+    return false;
+  }
+  for (let r = 0; r < scores.length; r++) {
+    for (let c = 0; c < scores[r].length; c++) {
+      if (scores[r][c] === undefined && c !== r) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
 function mapDispatchToProps(dispatch) {
   return {
     setScores: (score) => dispatch(setScores(score)),
@@ -87,18 +103,5 @@ function mapStateToProps(state) {
     scores: state.scores,
   };
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF",
-  },
-  nameText: {
-    fontSize: 14,
-    padding: 5,
-  },
-});
 
 export default connect(mapStateToProps, mapDispatchToProps)(BoutScreen);
