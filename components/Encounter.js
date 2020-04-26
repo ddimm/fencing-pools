@@ -183,6 +183,7 @@ function Encounter({ route, navigation, setScores, scores, fencers }) {
               reset={reset}
               handleFinish={() => {
                 resetTimer();
+                alert("Time's Up!");
                 console.log("done");
               }}
             />

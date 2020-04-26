@@ -1,23 +1,41 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
 import { StyleSheet, View } from "react-native";
-import { setFencers } from "../utils/actions";
 import { ScrollView } from "react-native-gesture-handler";
 import {
-  List,
   Button,
-  TextInput,
-  IconButton,
-  Text,
   Card,
+  IconButton,
   Paragraph,
+  TextInput,
   Title,
 } from "react-native-paper";
+import { connect } from "react-redux";
+import { setFencers } from "../utils/actions";
+
+function NameCard({ name, index, removeName }) {
+  return (
+    <Card
+      key={index}
+      style={{ marginBottom: 10, marginLeft: 5, marginRight: 5 }}
+    >
+      <Card.Content>
+        <Title>{`Fencer ${index + 1}`}</Title>
+        <Paragraph>{`${name}`}</Paragraph>
+      </Card.Content>
+      <Card.Actions>
+        <Button onPress={removeName} mode="text">
+          remove
+        </Button>
+      </Card.Actions>
+    </Card>
+  );
+}
 
 //input fencer names
 function NameScreen({ navigation, setFencers }) {
   const [names, setNames] = useState([]);
   const [text, setText] = useState("");
+  const [textInputFocus, setFocus] = useState(false);
 
   return (
     <View style={styles.container}>
@@ -36,7 +54,45 @@ function NameScreen({ navigation, setFencers }) {
           }}
           value={text}
           placeholder={"fencer name"}
+          onFocus={() => {
+            setFocus(true);
+          }}
+          onEndEditing={() => {
+            setFocus(false);
+          }}
+          onSubmitEditing={() => {
+            if (text !== "") {
+              setNames([...names, text]);
+              setText("");
+            }
+          }}
         ></TextInput>
+      </View>
+      <View style={styles.namesList}>
+        <ScrollView>
+          {names.map((value, index) => {
+            return (
+              <NameCard
+                name={value}
+                key={index}
+                index={index}
+                removeName={() => {
+                  setNames(
+                    names.filter((val) => {
+                      if (val === value) {
+                        return false;
+                      } else {
+                        return true;
+                      }
+                    })
+                  );
+                }}
+              />
+            );
+          })}
+        </ScrollView>
+      </View>
+      {textInputFocus ? (
         <IconButton
           onPress={() => {
             if (text !== "") {
@@ -45,48 +101,19 @@ function NameScreen({ navigation, setFencers }) {
             }
           }}
           icon={"plus"}
+          style={{
+            alignSelf: "flex-end",
+          }}
         />
-      </View>
-      <View style={styles.namesList}>
-        <ScrollView>
-          {names.map((item, index) => {
-            return (
-              <Card
-                key={index}
-                style={{ marginBottom: 10, marginLeft: 5, marginRight: 5 }}
-              >
-                <Card.Content>
-                  <Title>{`Fencer ${index + 1}`}</Title>
-                  <Paragraph>{`${item}`}</Paragraph>
-                </Card.Content>
-                <Card.Actions>
-                  <Button
-                    onPress={() => {
-                      setNames(
-                        names.filter((val) => {
-                          if (val === item) {
-                            return false;
-                          } else {
-                            return true;
-                          }
-                        })
-                      );
-                    }}
-                    mode="text"
-                  >
-                    remove
-                  </Button>
-                </Card.Actions>
-              </Card>
-            );
-          })}
-        </ScrollView>
-      </View>
+      ) : (
+        <></>
+      )}
+
       <View style={styles.startButtonView}>
         <Button
           mode="contained"
           onPress={() => {
-            if (names.length < 3) {
+            if (names.length <= 3) {
               alert("You must have at least four people to start a pool.");
             } else if (names.length > 12) {
               alert("You cannot have a pool bigger than 12 people.");

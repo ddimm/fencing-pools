@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Button, Text } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { connect } from "react-redux";
-import { DataTable } from "react-native-paper";
+import { DataTable, Text, Button } from "react-native-paper";
 
 function ResultsScreen({ scores, fencers, navigation }) {
   const [touchesScored, setTouchesScored] = useState([]);
@@ -45,30 +45,74 @@ function ResultsScreen({ scores, fencers, navigation }) {
   if (ready) {
     return (
       <View style={styles.container}>
-        <DataTable>
-          <DataTable.Header>
-            <DataTable.Title>Fencer</DataTable.Title>
-            <DataTable.Title numeric>Touches Scored</DataTable.Title>
-            <DataTable.Title numeric>Touches Received</DataTable.Title>
-            <DataTable.Title numeric>Victories</DataTable.Title>
-          </DataTable.Header>
-          {fencers.map((name, index) => {
-            return (
-              <DataTable.Row key={index}>
-                <DataTable.Cell>{name}</DataTable.Cell>
-                <DataTable.Cell>{touchesScored[index]}</DataTable.Cell>
-                <DataTable.Cell>{touchesReceived[index]}</DataTable.Cell>
-                <DataTable.Cell>{victories[index]}</DataTable.Cell>
-              </DataTable.Row>
-            );
-          })}
-        </DataTable>
+        <View style={{ flex: 1 }}>
+          <DataTable>
+            <DataTable.Header>
+              <DataTable.Title style={styles.dataTableHeader}>
+                <Text style={styles.headerText}>Fencer</Text>
+              </DataTable.Title>
+              <DataTable.Title style={styles.dataTableHeader} numeric>
+                <Text style={styles.headerText}>TS</Text>
+              </DataTable.Title>
+              <DataTable.Title style={styles.dataTableHeader} numeric>
+                <Text style={styles.headerText}>TR</Text>
+              </DataTable.Title>
+              <DataTable.Title style={styles.dataTableHeader} numeric>
+                <Text style={styles.headerText}>V</Text>
+              </DataTable.Title>
+              <DataTable.Title style={styles.dataTableHeader} numeric>
+                <Text style={styles.headerText}>IND</Text>
+              </DataTable.Title>
+            </DataTable.Header>
+
+            {fencers.map((name, index) => {
+              return (
+                <DataTable.Row key={index}>
+                  <DataTable.Cell>{name}</DataTable.Cell>
+                  <DataTable.Cell numeric>
+                    {touchesScored[index]}
+                  </DataTable.Cell>
+                  <DataTable.Cell numeric>
+                    {touchesReceived[index]}
+                  </DataTable.Cell>
+                  <DataTable.Cell numeric>{victories[index]}</DataTable.Cell>
+                  <DataTable.Cell numeric>
+                    {touchesScored[index] - touchesReceived[index]}
+                  </DataTable.Cell>
+                </DataTable.Row>
+              );
+            })}
+          </DataTable>
+        </View>
+        <View style={{ height: -1, flex: 1, margin: 10 }}>
+          <Button
+            onPress={() => {
+              navigation.navigate("Start");
+            }}
+            mode={"contained"}
+          >
+            Start Over
+          </Button>
+        </View>
       </View>
     );
   } else {
     return (
-      <View style={styles.container}>
-        <Text>Fetching Results</Text>
+      <View
+        style={{
+          flex: 1,
+          margin: 10,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Text
+          style={{
+            fontSize: 40,
+          }}
+        >
+          Fetching Results
+        </Text>
       </View>
     );
   }
@@ -76,9 +120,17 @@ function ResultsScreen({ scores, fencers, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    margin: 10,
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5FCFF",
+  },
+  dataTableHeader: {
+    flexWrap: "wrap",
+  },
+  headerText: {
+    textAlign: "center",
+
+    fontSize: 20,
+    overflow: "scroll",
   },
 });
 
