@@ -7,19 +7,24 @@ import getBoutOrder from "../utils/boutorders";
 import { Button, Card, Paragraph, Title, Subheading } from "react-native-paper";
 
 function BoutScreen({ navigation, fencers, scores, setScores }) {
-  const boutOrders = getBoutOrder(fencers.length);
+  // const boutOrders = getBoutOrder(fencers.length);
+  const [boutOrders, setBoutOrders] = useState([]);
   const [finished, setFinished] = useState(false);
   useEffect(() => {
+    setBoutOrders(getBoutOrder(fencers.length));
     if (scores === undefined || scores.length < 1) {
       setScores([...Array(fencers.length)].map(() => Array(fencers.length)));
     }
   }, []);
   useEffect(() => {
+    setScores([...Array(fencers.length)].map(() => Array(fencers.length)));
+  }, [fencers]);
+
+  useEffect(() => {
     isOver(scores).then((result) => {
       setFinished(result);
     });
   }, [scores]);
-
   return (
     <View style={{ marginTop: 10, justifyContent: "center", flex: 1 }}>
       <ScrollView>
