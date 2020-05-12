@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { View } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
 import { Button, Surface, Text } from "react-native-paper";
 import { connect } from "react-redux";
 import { setScores } from "../utils/actions";
-import { Timer } from "react-native-stopwatch-timer";
-
+import Timer from "./Timer";
 function Encounter({ route, navigation, setScores, scores, fencers }) {
   let { fencerOneIndex } = route.params;
   let { fencerTwoIndex } = route.params;
@@ -76,6 +75,70 @@ function Encounter({ route, navigation, setScores, scores, fencers }) {
             flex: 1,
           }}
         >
+          <Text
+            style={{
+              fontSize: 30,
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
+          >
+            Fencer Left
+          </Text>
+          <ScrollView>
+            <Text
+              style={{
+                fontSize: 20,
+                alignSelf: "center",
+                padding: 10,
+                textAlign: "center",
+              }}
+            >
+              {fencers[fencerOneIndex]}
+            </Text>
+          </ScrollView>
+        </View>
+        <View
+          style={{
+            flex: 1,
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 30,
+              fontWeight: "bold",
+              textAlign: "center",
+            }}
+          >
+            Fencer Right
+          </Text>
+          <ScrollView>
+            <Text
+              style={{
+                fontSize: 20,
+                alignSelf: "center",
+                padding: 10,
+                textAlign: "center",
+              }}
+            >
+              {fencers[fencerTwoIndex]}
+            </Text>
+          </ScrollView>
+        </View>
+      </View>
+      <View
+        style={{
+          flex: 1,
+          flexDirection: "row",
+          justifyContent: "center",
+          alignItems: "stretch",
+          margin: 5,
+        }}
+      >
+        <View
+          style={{
+            flex: 1,
+          }}
+        >
           <TouchableOpacity
             onPress={() => {
               if (paused) {
@@ -87,15 +150,6 @@ function Encounter({ route, navigation, setScores, scores, fencers }) {
               decreaseScore(1);
             }}
           >
-            <Text
-              style={{
-                fontSize: 20,
-                alignSelf: "center",
-                padding: 10,
-              }}
-            >
-              {fencers[fencerOneIndex]}
-            </Text>
             <Surface
               style={{
                 justifyContent: "center",
@@ -119,15 +173,6 @@ function Encounter({ route, navigation, setScores, scores, fencers }) {
             flex: 1,
           }}
         >
-          <Text
-            style={{
-              fontSize: 20,
-              alignSelf: "center",
-              padding: 10,
-            }}
-          >
-            {fencers[fencerTwoIndex]}
-          </Text>
           <TouchableOpacity
             onPress={() => {
               if (paused) {
@@ -158,8 +203,9 @@ function Encounter({ route, navigation, setScores, scores, fencers }) {
       <View
         style={{
           alignSelf: "center",
-          flex: 1,
-          width: "75%",
+          flex: 3,
+          width: "100%",
+          padding: 20,
         }}
       >
         <TouchableOpacity
@@ -174,7 +220,8 @@ function Encounter({ route, navigation, setScores, scores, fencers }) {
             style={{
               justifyContent: "center",
               alignItems: "center",
-              height: 100,
+              height: 200,
+              backgroundColor: "black",
             }}
           >
             <Timer
@@ -184,7 +231,6 @@ function Encounter({ route, navigation, setScores, scores, fencers }) {
               handleFinish={() => {
                 resetTimer();
                 alert("Time's Up!");
-                console.log("done");
               }}
             />
           </Surface>

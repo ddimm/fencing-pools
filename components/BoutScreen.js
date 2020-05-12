@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View } from "react-native";
-import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
+import { View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import { Button, Card, Paragraph, Subheading, Title } from "react-native-paper";
 import { connect } from "react-redux";
 import { setScores } from "../utils/actions";
 import getBoutOrder from "../utils/boutorders";
-import { Button, Card, Paragraph, Title, Subheading } from "react-native-paper";
 
 function BoutScreen({ navigation, fencers, scores, setScores }) {
-  // const boutOrders = getBoutOrder(fencers.length);
   const [boutOrders, setBoutOrders] = useState([]);
   const [finished, setFinished] = useState(false);
   useEffect(() => {
@@ -52,7 +51,6 @@ function BoutScreen({ navigation, fencers, scores, setScores }) {
               </Card.Content>
               <Card.Actions>
                 <Button
-                  mode="contained"
                   onPress={() => {
                     navigation.navigate("EncounterScreen", {
                       fencerOneIndex: fencer1 - 1,
