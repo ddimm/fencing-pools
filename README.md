@@ -1,2 +1,2 @@
 # fencing-pools
-A react-native that runs a fencing pool
+A react-native app that runs a fencing pool
