@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Button, Card, Paragraph, Title, Subheading } from "react-native-paper";
-import { View, Text } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Text } from "react-native";
 
 export default function Timer({
   totalDuration,
@@ -9,7 +8,6 @@ export default function Timer({
   handleFinish,
   stop,
 }) {
-  const [started, setStarted] = useState(false);
   const [timeRemaining, setTimeRemaining] = useState(totalDuration);
   const timerInterval = useRef(undefined);
   useEffect(() => {
